@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Set;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +27,7 @@ public class User {
     @Column(name = "username", nullable = false, length = 50, unique = true)
     private String username;
 
-    @Column(name = "password", nullable = false, length = 50)
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
     @Column(name = "email", nullable = false, length = 100, unique = true)
@@ -41,7 +39,7 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt = Instant.now();
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = quizz.bt.quizz.Entity.Enum.RoleConverter.class)
     @Column(name = "role", nullable = false)
     private Role role;
 

@@ -6,7 +6,6 @@ import quizz.bt.quizz.Repository.*;
 import quizz.bt.quizz.Entity.Enum.*;
 
 import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

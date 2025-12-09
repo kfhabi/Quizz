@@ -1,4 +1,4 @@
-CREATE DATABASE quizz_db;
+CREATE DATABASE IF NOT EXISTS quizz_db;
 USE quizz_db;
 
 CREATE TABLE users(
@@ -7,7 +7,7 @@ CREATE TABLE users(
 	password varchar(50) not null,
     email varchar(100) not null unique,
     full_name varchar(100) not null,
-    role enum ('student', 'admin', 'teacher') not null default 'student',
+    role enum ('STUDENT', 'ADMIN', 'TEACHER') not null default 'STUDENT',
     created_at timestamp default current_timestamp   
 );
 
@@ -87,8 +87,8 @@ CREATE TABLE results (
     score DECIMAL(5, 2), 
     started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (quiz_id) REFERENCES Quizzes(quiz_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (quiz_id) REFERENCES quizzes(quiz_id)
 );
 
 CREATE TABLE user_answers (
@@ -101,4 +101,18 @@ CREATE TABLE user_answers (
     FOREIGN KEY (question_id) REFERENCES question(question_id),
     FOREIGN KEY (selected_answer_id) REFERENCES answer(answer_id)
 );
+
+-- --------------------------------------------------
+-- Helpful example and normalization statements
+-- --------------------------------------------------
+-- If your existing data uses lowercase role values (e.g. 'admin'),
+-- you can normalize to uppercase with the following (test on staging first):
+-- UPDATE users SET role = UPPER(role);
+
+-- Example seed inserts (commented out). Uncomment and adjust before running.
+-- INSERT INTO users (username, password, email, full_name, role) VALUES
+--   ('admin', 'CHANGE_ME_PASSWORD', 'admin@example.com', 'Site Admin', 'ADMIN'),
+--   ('teacher1', 'CHANGE_ME_PASSWORD', 'teacher1@example.com', 'Teacher One', 'TEACHER'),
+--   ('student1', 'CHANGE_ME_PASSWORD', 'student1@example.com', 'Student One', 'STUDENT');
+
 

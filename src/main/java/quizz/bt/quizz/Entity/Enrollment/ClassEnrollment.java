@@ -24,14 +24,14 @@ public class ClassEnrollment {
     @Column(name = "joined_at", updatable = false)
     private Instant joinedAt = Instant.now();
 
-    // --- Quan hệ Nhiều-1 (ánh xạ từ ID) ---
+    // Quan he
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("classId") // Báo cho JPA biết trường này là 1 phần của ID
+    @MapsId("classId") 
     @JoinColumn(name = "class_id")
     private SchoolClass schoolClass;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("studentId") // Báo cho JPA biết trường này là 1 phần của ID
+    @MapsId("studentId") 
     @JoinColumn(name = "student_id")
     private User student;
 }
