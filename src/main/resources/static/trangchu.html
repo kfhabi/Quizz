@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Trang chủ</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f8ff;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    background: #fff;
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .logo-box {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    font-weight:600;
+    font-size:17px;
+    flex:1;
+  }
+
+  /* Logo ảnh thật */
+  .logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0453F4;
+  }
+
+  .nav-links {
+    flex:2;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    font-weight:600;
+    font-size:15px;
+    position:relative;
+    margin:0 30px;
+  }
+
+  .nav-item {
+    cursor:pointer;
+    color:#000;
+    transition:opacity .15s ease;
+    text-decoration:none;
+    padding:4px 8px;
+    position:relative;
+  }
+  .nav-item:hover { opacity:0.7; }
+
+  .active {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+  }
+
+  /* Dropdown */
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(3,10,18,0.08);
+    padding: 6px 0;
+    display: none;
+    flex-direction: column;
+    z-index: 200;
+  }
+
+  .dropdown-item {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #0b0b0b;
+    white-space: nowrap;
+  }
+
+  .dropdown-item:hover {
+    background: #f4f6fb;
+    cursor: pointer;
+  }
+
+  /* USER PROFILE BUTTON */
+  .user-profile-btn {
+    display: flex;
+    border: none;
+    background: #fff;
+    padding: 4px 12px 4px 4px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), inset 0 0 0 1px #eee;
+    transition: all 0.2s ease;
+    align-items: center;
+    gap: 8px;
+    color: #000;
+  }
+
+  /* Avatar người dùng - ảnh thật */
+  .user-avatar-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0453F4;
+  }
+
+  .user-profile-btn:active,
+  .user-profile-btn.active-state {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transform: translateY(1px);
+  }
+
+  .gradient-name {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* HERO SECTION */
+  .hero-section {
+    display: flex;
+    padding: 60px 80px;
+    gap: 60px;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 100px);
+  }
+
+  .hero-left {
+    flex: 1;
+  }
+
+  .hero-left h1 {
+    font-size: 48px;
+    margin: 0 0 16px 0;
+    font-weight: 700;
+  }
+
+  .hero-left p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+  }
+
+  .hero-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Ảnh minh họa lớn - thay link ở đây */
+  .hero-image {
+    width: 100%;
+    max-width: 520px;
+    height: 380px;
+    background: #e16c6c;
+    border-radius: 20px;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.4s ease;
+  }
+
+  .hero-image:hover {
+    transform: scale(1.03);
+  }
+
+  .btn-create-quiz {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    color: #fff;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(4, 83, 244, 0.3);
+  }
+
+  .btn-create-quiz:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(4, 83, 244, 0.4);
+  }
+
+  .btn-create-quiz:active,
+  .btn-create-quiz.clicked {
+    background: #6b6b6b;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+
+  <div class="logo-box">
+    <!-- THAY LINK ẢNH LOGO CỦA BẠN VÀO ĐÂY -->
+    <img src="https://your-link-here.com/logo.png" alt="Logo" class="logo-img">
+    <span>NLH</span>
+  </div>
+
+  <div class="nav-links" id="navLinks">
+    <span class="nav-item active" onclick="setActive(this)">Home</span>
+    <span class="nav-item" onclick="goClass()">Lớp học</span>
+    
+    <div class="nav-item" id="libraryBtn" onclick="toggleLibrary(event)">
+      Thư viện Down Arrow
+      <div class="dropdown-menu" id="dropdownMenu" aria-hidden="true">
+        <div class="dropdown-item" onclick="openPage('library_saved')">Danh sách quiz đã lưu</div>
+        <div class="dropdown-item" onclick="openPage('library_history')">Lịch sử làm bài</div>
+      </div>
+    </div>
+
+    <span class="nav-item" onclick="ThongBao()">Bell</span>
+  </div>
+
+  <button class="user-profile-btn" id="userProfileBtn" onclick="profileClick()">
+    <!-- THAY LINK ẢNH AVATAR CỦA BẠN VÀO ĐÂY -->
+    <img src="https://your-link-here.com/avatar.jpg" alt="Avatar" class="user-avatar-img">
+    <span>NPN</span>
+  </button>
+
+</div>
+
+<div class="hero-section">
+  <div class="hero-left">
+    <h1 id="greeting">Xin chào!</h1>
+    <p>
+      Tạo câu hỏi để ôn tập ngay bây giờ, giúp bạn củng cố kiến thức tiếng Anh nhanh chóng và hiệu quả. 
+      Hệ thống quiz thân thiện hỗ trợ luyện tập mọi lúc, mọi nơi với giao diện dễ sử dụng.
+      Trải nghiệm hàng loạt tính năng hấp dẫn giúp việc học trở nên thú vị và dễ dàng hơn mỗi ngày.
+    </p>
+    <button class="btn-create-quiz" id="btnCreateQuiz" onclick="createQuiz()">Tạo bài mới</button>
+  </div>
+  
+  <div class="hero-right">
+    <!-- THAY LINK ẢNH MINH HỌA LỚN CỦA BẠN VÀO ĐÂY -->
+    <img src="C:\Users\nguye\OneDrive\Documents\Hình ảnh\ảnh bài tập" alt="Hình minh họa" class="hero-image">
+  </div>
+</div>
+
+<script>
+    // 1. Kiểm tra đăng nhập (Bảo vệ trang)
+    const userStr = localStorage.getItem("user");
+    if (!userStr) {
+        alert("Bạn chưa đăng nhập!");
+        window.location.href = "dangnhap.html";
+    }
+    
+    // 2. Lấy thông tin user và hiển thị tên
+    const user = JSON.parse(userStr);
+    const displayName = user.fullName || user.username; // Ưu tiên Fullname, nếu không có thì lấy Username
+    document.getElementById("userNameDisplay").innerText = "Hi, " + displayName;
+
+    // 4. CÁC HÀM CŨ (Giữ nguyên logic điều hướng)
+    function toggleLibrary() {
+      const lib = document.getElementById('libraryBtn');
+      const menu = document.getElementById('dropdownMenu');
+      lib.classList.toggle('active'); // toggle thay vì add/remove thủ công
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function profileClick() {
+       window.location.href = "taikhoansinhvien.html";
+    }
+
+    function goClass() { window.location.href = "Dsachlophoc.html"; }
+    function ThongBao() { window.location.href = "Thongbaosvien.html"; }
+    function openPage(page){
+      if(page === 'library_saved') window.location.href = 'ThuvienDSL.html';
+      else if(page === 'library_history') window.location.href = 'ThuvienLSU.html';
+    }
+    
+    // Click outside to close menu
+    document.addEventListener('click', function(e){
+        const lib = document.getElementById('libraryBtn');
+        const menu = document.getElementById('dropdownMenu');
+        if (!lib.contains(e.target) && !menu.contains(e.target)) {
+            menu.style.display = 'none';
+            lib.classList.remove('active');
+        }
+    });
+  </script>
+
+</body>
+</html>

@@ -30,6 +30,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
     }
 
+    // --- ĐÂY LÀ HÀM CẦN SỬA ---
     public User registerUser(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username exists");
@@ -42,9 +43,15 @@ public class UserService {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
 
-        user.setRole(Role.STUDENT);
+        // <--- SỬA Ở ĐÂY: Logic thông minh hơn
+        // Nếu Controller chưa gán Role (nghĩa là null), thì mới mặc định là STUDENT.
+        // Còn nếu Controller đã gán là TEACHER rồi thì giữ nguyên.
+        if (user.getRole() == null) {
+            user.setRole(Role.STUDENT);
+        }
+        // -------------------------
 
-        return userRepository.save(user);
+       return userRepository.save(user);
     }
 
     // Admin operations
@@ -71,5 +78,16 @@ public class UserService {
 
     public List<User> getAllTeachers() {
         return userRepository.findByRole(Role.TEACHER);
+    }
+
+    public User login(String username, String password)
+    {
+        User user = getUserByUsername(username);
+
+        if (!passwordEncoder.matches(password, user.getPassword()))
+        {
+           throw new IllegalArgumentException("Wrong password");
+        }
+        return user;
     }
 }

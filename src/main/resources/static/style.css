@@ -1,0 +1,38 @@
+/* Avatar Button */
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #ffffff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+
+  cursor: pointer;
+  border: none;
+
+  transition: all .25s ease;
+}
+
+/* Avatar vòng tròn */
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  background: #b8f1c4;
+  border-radius: 50%;
+}
+
+/* Trạng thái ACTIVE (khi ấn vào) */
+.user-btn.active {
+  background: linear-gradient(90deg, #0453F4, #F600FF);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.user-btn.active span {
+  color: #fff !important;
+}
+
+.user-btn.active .user-avatar {
+  background: rgba(255,255,255,0.8);
+}

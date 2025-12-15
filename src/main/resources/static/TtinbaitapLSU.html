@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Thông tin bài tập</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f8ff;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    background: #fff;
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .logo-box {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    font-weight:600;
+    font-size:17px;
+    flex:1;
+  }
+
+  .logo-circle { width:36px; height:36px; border-radius:50%; background:#e6e6e6; }
+
+  .nav-links {
+    flex:2;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    font-weight:600;
+    font-size:15px;
+    position:relative;
+    margin:0 30px;
+  }
+
+  .nav-item {
+    cursor:pointer;
+    color:#000;
+    transition:opacity .15s ease;
+    text-decoration:none;
+    padding:4px 8px;
+    position:relative;
+  }
+  .nav-item:hover { opacity:0.7; }
+
+  .active {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(3,10,18,0.08);
+    padding: 6px 0;
+    display: none;
+    flex-direction: column;
+    z-index: 200;
+  }
+
+  .dropdown-item {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #0b0b0b;
+    white-space: nowrap;
+  }
+
+  .dropdown-item:hover {
+    background: #f4f6fb;
+    cursor: pointer;
+  }
+
+  .user-profile-btn {
+    display: flex;
+    border: none;
+    background: #fff;
+    padding: 4px 12px 4px 4px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), inset 0 0 0 1px #eee;
+    transition: all 0.2s ease;
+    width: fit-content;
+    align-items: center;
+    gap: 8px;
+    color: #000;
+  }
+
+  .user-avatar { 
+    width: 28px; 
+    height: 28px; 
+    border-radius: 50%; 
+    background: #b8f1c4;
+  }
+
+  /* QUIZ INFO CONTENT */
+  .quiz-info-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: #000;
+  }
+
+  .info-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 48px 42px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+  }
+
+  .info-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: start;
+  }
+
+  .info-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .info-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    padding-top: 8px;
+  }
+
+  .info-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+  }
+
+  .info-input:focus {
+    outline: none;
+    border-color: #0453F4;
+    background: #fff;
+  }
+
+  .info-input.small {
+    width: 120px;
+  }
+
+  .info-select {
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #f9f9f9;
+    cursor: pointer;
+  }
+
+  .two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* ACTION BUTTONS */
+  .action-buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .btn-action {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-do-quiz {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(4, 83, 244, 0.3);
+  }
+
+  .btn-do-quiz:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(4, 83, 244, 0.4);
+  }
+
+  .btn-edit {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(4, 83, 244, 0.3);
+  }
+
+  .btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(4, 83, 244, 0.4);
+  }
+
+
+  /* DELETE MODAL */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+
+  .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #000;
+  }
+
+  .modal-buttons {
+    display: flex;
+    gap: 12px;
+  }
+
+  .modal-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .modal-btn.confirm {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    color: #fff;
+  }
+
+  .modal-btn.cancel {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .modal-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, #F600FF, #FF0080);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo-box">
+    <div class="logo-circle"></div>
+    <span>Logo + tên</span>
+  </div>
+
+  <div class="nav-links">
+    <span class="nav-item" onclick="goHome()">Home</span>
+    <span class="nav-item" onclick="goClass()">Lớp học</span>
+
+    <div class="nav-item active" id="libraryBtn" onclick="toggleLibrary(event)">
+      Thư viện ▼
+      <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-item" onclick="goToLibrary()">Danh sách quiz đã lưu</div>
+        <div class="dropdown-item">Lịch sử làm bài</div>
+      </div>
+    </div>
+
+    <span class="nav-item" onclick="ThongBao()">🔔</span>
+  </div>
+
+  <button class="user-profile-btn" id="userProfileBtn" onclick="profileClick()">
+    <div class="user-avatar"></div>
+    <span>NPN</span>
+  </button>
+</div>
+
+<div class="quiz-info-container">
+  <h1 class="page-title">Thông tin bài tập</h1>
+
+  <div class="info-card">
+    <div class="info-row">
+      <div class="info-label">Tên bài quiz:</div>
+      <input type="text" class="info-input" value="Ôn tập từ vựng - School" readonly>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Chủ đề:</div>
+      <input type="text" class="info-input" value="Tiếng Anh - Từ vựng" readonly>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Mô tả:</div>
+      <input type="text" class="info-input" value="Bài tập ôn tập từ vựng về trường học" readonly>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Số câu:</div>
+      <div class="two-column">
+        <div>
+          <input type="text" class="info-input small" value="2" readonly>
+        </div>
+        <div>
+          <span style="font-size: 14px; color: #666;">Loại câu hỏi: </span>
+          <input type="text" class="info-input" value="Một đáp án" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Thời gian (phút):</div>
+      <div class="two-column">
+        <div>
+          <input type="text" class="info-input small" value="1" readonly>
+        </div>
+        <div>
+          <span style="font-size: 14px; color: #666;">Ngày: </span>
+          <input type="text" class="info-input" value="03/12/2024" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Điểm gần nhất:</div>
+      <div class="two-column">
+        <div>
+          <input type="text" class="info-input small" value="8.5/10" readonly>
+        </div>
+        <div>
+          <span style="font-size: 14px; color: #666;">Phần loại câu hỏi: </span>
+          <select class="info-select" disabled>
+            <option>Dễ</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <button class="btn-action btn-do-quiz" onclick="doQuiz()">
+      ✏️ Làm bài
+    </button>
+    <button class="btn-action btn-edit" onclick="editQuiz()">
+      📝 Sửa bài
+    </button>
+  </div>
+</div>
+
+
+
+<script>
+  function toggleLibrary(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('dropdownMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+  }
+
+  function goHome() {
+    window.location.href = 'trangchu.html';
+  }
+
+  function goClass() {
+    window.location.href = "Dsachlophoc.html";
+}
+
+// THÊM ĐOẠN NÀY
+const userName = localStorage.getItem("username") || "NPN";
+const profileNameBtn = document.querySelector('#userProfileBtn span');
+if (profileNameBtn) {
+    profileNameBtn.textContent = userName;
+}
+
+
+  function goToLibrary() {
+    window.location.href = 'ThuvienDSL.html';
+  }
+
+  function goClass() {
+      window.location.href = "Dsachlophoc.html"; // ← Trỏ đến trang lớp học bạn đã tạo
+  }
+
+  function doQuiz() {
+    window.location.href = 'lambailophoc.html';
+  }
+
+  function editQuiz() {
+     window.location.href = 'SuabaitapLSU.html';
+  }
+
+  function ThongBao() {
+     window.location.href = 'Thongbaosvien.html';
+  }
+
+  
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    const lib = document.getElementById('libraryBtn');
+    const menu = document.getElementById('dropdownMenu');
+    if (!lib.contains(e.target)) {
+      menu.style.display = 'none';
+    }
+  });
+
+  // Close modal when clicking outside
+  document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeDeleteModal();
+    }
+  });
+
+  
+
+</script>
+
+</body>
+</html>

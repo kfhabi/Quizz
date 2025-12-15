@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Trang chủ giáo viên</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f8ff;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    background: #fff;
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .logo-box {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    font-weight:600;
+    font-size:17px;
+    flex:1;
+  }
+
+  .logo-circle { width:36px; height:36px; border-radius:50%; background:#e6e6e6; }
+
+  .nav-links {
+    flex:2;
+    display:flex;
+    justify-content: space-between;   /* DÀN ĐỀU */
+    align-items:center;
+    font-weight:600;
+    font-size:15px;
+    position:relative;
+    margin:0 30px;
+  }
+
+  .nav-item {
+    cursor:pointer;
+    color:#000;
+    transition:opacity .15s ease;
+    text-decoration:none;
+    padding:4px 8px;
+    position:relative;
+  }
+  .nav-item:hover { opacity:0.7; }
+
+  /* active gradient text */
+  .active {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+  }
+
+
+  /* --- USER PROFILE BUTTON STYLE --- */
+  .user-profile-btn {
+    display: flex;
+    
+    /* Button Styling */
+    border: none;
+    background: #fff; /* Màu trắng cho trạng thái bình thường */
+    padding: 4px 12px 4px 4px;
+    border-radius: 20px; /* Bo tròn vừa phải */
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), inset 0 0 0 1px #eee; /* Hiệu ứng dập nổi nhẹ */
+    transition: all 0.2s ease;
+    width: fit-content;
+    
+    /* Nội dung bên trong */
+    align-items: center;
+    gap: 8px;
+    color: #000; /* Màu chữ đen ban đầu */
+  }
+
+  /* Avatar trong button */
+  .user-avatar { 
+    width: 28px; 
+    height: 28px; 
+    border-radius: 50%; 
+    background: #b8f1c4; /* Giả định màu avatar */
+    /* Nếu có ảnh thật, bạn có thể dùng background-image */
+  }
+
+  /* Hiệu ứng khi nhấn (active/click) */
+  .user-profile-btn:active,
+  .user-profile-btn.active-state { /* Thêm class active-state để dễ kiểm soát bằng JS */
+    background: linear-gradient(90deg, #0453F4, #F600FF); /* Gradient xanh tím */
+    color: #fff; /* Chữ trắng */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 0 1px transparent; /* Giảm hiệu ứng dập nổi */
+    transform: translateY(1px); /* Hiệu ứng nhấn xuống */
+  }
+
+  /* Gradient text class for greeting */
+  .gradient-name {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    display: flex;
+    padding: 60px 80px;
+    gap: 60px;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 100px); /* Chiều cao toàn màn hình trừ navbar */
+  }
+
+  .hero-left {
+    flex: 1;
+  }
+
+  .hero-left h1 {
+    font-size: 48px;
+    margin: 0 0 16px 0;
+    font-weight: 700;
+  }
+
+  .hero-left p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+  }
+
+  .hero-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-image {
+    width: 100%;
+    max-width: 500px;
+    height: 350px;
+    background: #d4d4d4;
+    border-radius: 16px;
+  }
+
+  /* Button Tạo Quiz Mới */
+  .btn-create-quiz {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    color: #fff;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(4, 83, 244, 0.3);
+  }
+
+  .btn-create-quiz:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(4, 83, 244, 0.4);
+  }
+
+  .btn-create-quiz:active,
+  .btn-create-quiz.clicked {
+    background: #6b6b6b;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+
+  <div class="logo-box">
+    <div class="logo-circle"></div>
+    <span>Logo + tên</span>
+  </div>
+
+  <div class="nav-links" id="navLinks">
+    <span class="nav-item active" onclick="goHome()">Home</span>
+
+    <span class="nav-item" onclick="goClass()">Lớp học</span>
+
+    <span class="nav-item" onclick="createQuiz()">Tạo bài tập</span>
+    
+    <span class="nav-item" onclick="ThongBaoGV()">🔔</span>
+  </div>
+
+  <button class="user-profile-btn" id="userProfileBtn" onclick="profileClick()">
+    <div class="user-avatar"></div>
+    <span>NPN</span>
+  </button>
+
+</div>
+
+<div class="hero-section">
+  <div class="hero-left">
+    <h1 id="greeting">Xin chào!</h1>
+    <p>
+      Tạo câu hỏi để ôn tập ngay bây giờ, giúp bạn củng cố kiến thức tiếng Anh nhanh chóng và hiệu quả. Hệ thống quiz thân thiện hỗ trợ luyện tập mọi lúc, mọi nơi với giao diện dễ sử dụng.Trải nghiệm hàng loạt tính năng hấp dẫn giúp việc học trở nên thú vị và dễ dàng hơn mỗi ngày.
+    </p>
+    <button class="btn-create-quiz" id="btnCreateQuiz" onclick="createQuiz()">Tạo bài mới</button>
+  </div>
+  
+  <div class="hero-right">
+    <div class="hero-image"></div>
+  </div>
+</div>
+
+<script>
+    // 1. Kiểm tra đăng nhập
+    const userStr = localStorage.getItem("user");
+    if (!userStr) {
+        alert("Vui lòng đăng nhập!");
+        window.location.href = "dangnhap.html";
+    }
+    const user = JSON.parse(userStr);
+
+
+    // 3. Hiển thị tên
+    const displayName = user.fullName || user.username;
+    document.getElementById("teacherNameDisplay").innerText = "GV. " + displayName;
+
+
+    // --- Các hàm chức năng cũ ---
+    function createQuiz() { window.location.href = "taobaitap.html"; }
+    function goClass() { window.location.href = "Dsachlophocgvien.html"; }
+    function ThongBaoGV() { window.location.href = "Thongbaogvien.html"; }
+    function profileClick() { window.location.href = "taikhoangiaovien.html"; }
+    
+    function toggleLibrary() {
+        const menu = document.getElementById('dropdownMenu');
+        if(menu) menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    // Click outside logic
+    document.addEventListener('click', function(e){
+        const lib = document.getElementById('libraryBtn');
+        const menu = document.getElementById('dropdownMenu');
+        if (lib && menu && !lib.contains(e.target)) {
+            menu.style.display = 'none';
+            lib.classList.remove('active');
+        }
+    });
+</script>
+
+</body>
+</html>

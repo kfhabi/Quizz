@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông báo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #e5ebf5;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #fff;
+            padding: 14px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-weight: 600;
+            font-size: 17px;
+            flex: 1;
+        }
+
+        .logo-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e6e6e6;
+        }
+
+        .nav-links {
+            flex: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 30px;
+        }
+
+        .nav-item {
+            cursor: pointer;
+            color: #000;
+            transition: opacity .15s ease;
+            padding: 4px 8px;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            opacity: 0.7;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #0453F4, #F600FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 200px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(3,10,18,0.08);
+            padding: 6px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 200;
+        }
+
+        .dropdown-item {
+            padding: 10px 14px;
+            font-size: 14px;
+            color: #0b0b0b;
+            white-space: nowrap;
+        }
+
+        .dropdown-item:hover {
+            background: #f4f6fb;
+            cursor: pointer;
+        }
+
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .user-profile-btn {
+            display: flex;
+            border: none;
+            background: #fff;
+            padding: 4px 12px 4px 4px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05), inset 0 0 0 1px #eee;
+            transition: all 0.2s ease;
+            align-items: center;
+            gap: 8px;
+            color: #000;
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #b8f1c4;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 24px;
+        }
+
+        /* TAB BAR */
+        .tab-bar {
+            display: flex;
+            background: white;
+            padding: 6px;
+            border-radius: 14px;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            color: #222;
+            font-size: 15px;
+        }
+
+        .tab.active {
+            background: #f0f2ff;
+            background-image: linear-gradient(90deg, #0453F4, #F600FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        /* NOTIFICATION CARD */
+        .notification-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .notification-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .notification-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .notification-icon-wrapper {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(90deg, rgba(4, 83, 244, 0.1), rgba(246, 0, 255, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notification-icon-wrapper svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .bell-icon {
+            fill: url(#gradient1);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .notification-date {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .delete-notification-btn {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .delete-notification-btn:hover {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+
+        .delete-notification-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #9b4dff;
+        }
+
+        .delete-notification-btn:hover svg {
+            fill: #f44336;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Gradient definitions */
+        svg.hidden-svg {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hidden SVG for gradients -->
+    <svg class="hidden-svg">
+        <defs>
+            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#0453F4;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#F600FF;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="logo-box">
+            <div class="logo-circle"></div>
+            <span>Logo + tên</span>
+        </div>
+
+        <div class="nav-links">
+            <span class="nav-item" onclick="goHome()">Home</span>
+            <span class="nav-item" onclick="goClass()">Lớp học</span>
+
+            <div class="nav-item" id="libraryBtn" onclick="toggleLibrary(event)">
+                Thư viện ▼
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-item" onclick="openPage('library_saved')">Danh sách quiz đã lưu</div>
+                    <div class="dropdown-item" onclick="openPage('library_history')">Lịch sử làm bài</div>
+                </div>
+            </div>
+
+            <span class="nav-item notification-icon active">
+                🔔
+                <span class="notification-badge" id="notificationBadge">3</span>
+            </span>
+        </div>
+
+        <button class="user-profile-btn" id="userProfileBtn" onclick="profileClick()">
+            <div class="user-avatar"></div>
+            <span id="usernameNav">NPN</span>
+        </button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <h1 class="page-title">Thông báo</h1>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <div class="tab active" onclick="switchTab(0)">Lớp học</div>
+            <div class="tab" onclick="switchTab(1)">Cá nhân</div>
+        </div>
+
+        <!-- Tab Content: Lớp học -->
+        <div class="tab-content active" id="classTab">
+            <div class="notification-container" id="classNotifications">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Tab Content: Cá nhân -->
+        <div class="tab-content" id="personalTab">
+            <div class="notification-container" id="personalNotifications">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample notification data
+        let classNotifications = [
+            {
+                id: 1,
+                title: "Lớp Tiếng Anh 1 đã đăng Bài tập ôn tập từ vựng trường học",
+                date: "1 tháng 12",
+                type: "class"
+            },
+            {
+                id: 2,
+                title: "Lớp Tiếng Anh 1 đã đăng Bài tập ôn tập từ vựng",
+                date: "1 tháng 12",
+                type: "class"
+            },
+            {
+                id: 3,
+                title: "Lớp Tiếng Anh 1 đã đăng Bài tập ôn tập từ vựng",
+                date: "1 tháng 12",
+                type: "class"
+            }
+        ];
+
+        let personalNotifications = [
+            {
+                id: 4,
+                title: "Tên app: update tính năng mới",
+                date: "1 tháng 12",
+                type: "personal"
+            },
+            {
+                id: 5,
+                title: "Tên app: update tính năng mới",
+                date: "1 tháng 12",
+                type: "personal"
+            },
+            {
+                id: 6,
+                title: "Tên app: update tính năng mới",
+                date: "1 tháng 12",
+                type: "personal"
+            }
+        ];
+
+        // Load from localStorage if exists
+        function loadNotifications() {
+            const savedClassNotif = localStorage.getItem('classNotifications');
+            const savedPersonalNotif = localStorage.getItem('personalNotifications');
+            
+            if (savedClassNotif) {
+                classNotifications = JSON.parse(savedClassNotif);
+            }
+            if (savedPersonalNotif) {
+                personalNotifications = JSON.parse(savedPersonalNotif);
+            }
+        }
+
+        // Save to localStorage
+        function saveNotifications() {
+            localStorage.setItem('classNotifications', JSON.stringify(classNotifications));
+            localStorage.setItem('personalNotifications', JSON.stringify(personalNotifications));
+            updateBadge();
+        }
+
+        // Render notifications
+        function renderNotifications() {
+            renderClassNotifications();
+            renderPersonalNotifications();
+            updateBadge();
+        }
+
+        function renderClassNotifications() {
+            const container = document.getElementById('classNotifications');
+            
+            if (classNotifications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔔</div>
+                        <div class="empty-state-text">Chưa có thông báo nào</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = classNotifications.map(notif => `
+                <div class="notification-card">
+                    <div class="notification-icon-wrapper">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path class="bell-icon" d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${notif.title}</div>
+                        <div class="notification-date">${notif.date}</div>
+                    </div>
+                    <button class="delete-notification-btn" onclick="deleteNotification(${notif.id}, 'class')">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderPersonalNotifications() {
+            const container = document.getElementById('personalNotifications');
+            
+            if (personalNotifications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔔</div>
+                        <div class="empty-state-text">Chưa có thông báo nào</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = personalNotifications.map(notif => `
+                <div class="notification-card">
+                    <div class="notification-icon-wrapper">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path class="bell-icon" d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${notif.title}</div>
+                        <div class="notification-date">${notif.date}</div>
+                    </div>
+                    <button class="delete-notification-btn" onclick="deleteNotification(${notif.id}, 'personal')">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Delete notification
+        function deleteNotification(id, type) {
+            if (type === 'class') {
+                classNotifications = classNotifications.filter(n => n.id !== id);
+                renderClassNotifications();
+            } else {
+                personalNotifications = personalNotifications.filter(n => n.id !== id);
+                renderPersonalNotifications();
+            }
+            saveNotifications();
+        }
+
+        // Update badge count
+        function updateBadge() {
+            const totalCount = classNotifications.length + personalNotifications.length;
+            const badge = document.getElementById('notificationBadge');
+            
+            if (totalCount > 0) {
+                badge.textContent = totalCount;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Switch tabs
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach((tab, i) => {
+                if (i === index) {
+                    tab.classList.add('active');
+                    contents[i].classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                    contents[i].classList.remove('active');
+                }
+            });
+        }
+
+        // Add notification (can be called from other pages)
+        function addNotification(title, type = 'personal') {
+            const newNotif = {
+                id: Date.now(),
+                title: title,
+                date: new Date().toLocaleDateString('vi-VN', { day: 'numeric', month: 'long' }),
+                type: type
+            };
+
+            if (type === 'class') {
+                classNotifications.unshift(newNotif);
+            } else {
+                personalNotifications.unshift(newNotif);
+            }
+
+            saveNotifications();
+            renderNotifications();
+        }
+
+        // Navbar functions
+        function toggleLibrary(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('dropdownMenu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function profileClick() {
+            window.location.href = "taikhoansinhvien.html";
+        }
+
+        function openPage(page) {
+            if (page === 'library_saved') {
+                window.location.href = "ThuvienDSL.html";
+            }
+            if (page === 'library_history') {
+                alert("Đi đến lịch sử làm bài");
+            }
+        }
+
+        function goHome() {
+            window.location.href = "trangchu.html";
+        }
+
+        function goClass() {
+            window.location.href = "Dsachlophoc.html";
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const lib = document.getElementById('libraryBtn');
+            const menu = document.getElementById('dropdownMenu');
+            if (!lib.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem("username") || "NPN";
+            document.getElementById('usernameNav').textContent = userName;
+            
+            loadNotifications();
+            renderNotifications();
+        });
+
+        // Expose function globally for other pages to add notifications
+        window.addNotification = addNotification;
+    </script>
+</body>
+</html>

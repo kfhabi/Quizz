@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<title>Đăng ký</title>
+<style>
+body{margin:0;
+    font-family:Arial;
+    background:#eef4ff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh}
+.container{background:white;
+    width:700px;
+    border-radius:20px;
+    display:flex;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+.left{width:45%;
+    background:#dfeaff;
+    border-radius:20px 0 0 20px;
+    display:flex;
+    justify-content:center;
+    align-items:center}
+.right{width:55%;
+    padding:40px}
+input{width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    margin-bottom:14px}
+.btn{width:100%;
+    padding:12px;
+    background:#4a60f4;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="left">
+        <h3>Quiz System</h3>
+    </div>
+    <div class="right">
+        <h2>Tạo tài khoản mới</h2>
+
+        <input id="fullName" placeholder="Họ và tên đầy đủ">
+        <input id="username" placeholder="Tên đăng nhập">
+        <input id="email" type="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Mật khẩu">
+
+        <label for="role" style="font-size:14px; color:#555">Bạn đăng ký với vai trò:</label>
+        <select id="role">
+            <option value="STUDENT">Học sinh</option>
+            <option value="TEACHER">Giáo viên</option>
+        </select>
+
+        <button class="btn" onclick="registerUnified()">Đăng ký</button>
+
+        <p style="margin-top:10px">
+            Đã có tài khoản? <a href="dangnhap.html">Đăng nhập</a>
+        </p>
+    </div>
+</div>
+
+<script>
+async function registerUnified() {
+    // 1. Lấy dữ liệu từ ô nhập
+    const fullName = document.getElementById("fullName").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    
+    // Lấy giá trị từ thẻ Select (STUDENT hoặc TEACHER)
+    const roleSelected = document.getElementById("role").value;
+
+    // 2. Kiểm tra rỗng
+    if (!fullName || !username || !email || !password) {
+        alert("Bạn cần nhập đầy đủ thông tin!");
+        return;
+    }
+
+    // 3. Gom dữ liệu (ĐÃ SỬA LỖI)
+    const data = {
+        fullName: fullName,
+        username: username,
+        email: email,
+        password: password,
+        role: roleSelected // <--- ĐÃ SỬA: Dùng đúng tên biến roleSelected
+    };
+
+    // 4. Gọi API
+    try {
+        const response = await fetch('http://localhost:8080/api/v1/users/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert("Đăng ký thành công! Vui lòng đăng nhập.");
+            window.location.href = "dangnhap.html"; 
+        } else {
+            const msg = await response.text();
+            alert("Đăng ký thất bại: " + msg);
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Lỗi kết nối Server! (Hãy kiểm tra lại Console)");
+    }
+}
+</script>
+
+</body>
+</html>

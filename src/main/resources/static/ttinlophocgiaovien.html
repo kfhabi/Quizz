@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thông tin lớp học</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Arial,sans-serif;background:#e5ebf5;min-height:100vh}
+    .navbar{background:#fff;padding:14px 36px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,.08);position:sticky;top:0;z-index:50}
+    .logo-box{display:flex;gap:10px;align-items:center;font-weight:600;font-size:17px;flex:1}
+    .logo-circle{width:36px;height:36px;border-radius:50%;background:#e6e6e6}
+    .nav-links{flex:2;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:15px;margin:0 30px}
+    .nav-item{cursor:pointer;color:#000;transition:opacity .15s;padding:4px 8px}
+    .nav-item:hover{opacity:.7}
+    .active{background:linear-gradient(90deg,#0453F4,#F600FF);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+    .user-profile-btn{display:flex;border:none;background:#fff;padding:4px 12px 4px 4px;border-radius:20px;cursor:pointer;font-weight:500;font-size:15px;box-shadow:0 2px 4px rgba(0,0,0,.05),inset 0 0 0 1px #eee;align-items:center;gap:8px;color:#000;transition:.2s}
+    .user-avatar{width:28px;height:28px;border-radius:50%;background:#b8f1c4}
+    .container{max-width:1100px;margin:40px auto;background:#eaf4ff;padding:30px;border-radius:12px}
+    h2{margin-bottom:20px;color:#000;font-size:26px}
+    .tab-bar{display:flex;background:#fff;padding:6px;border-radius:14px;gap:2px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    .tab{flex:1;text-align:center;padding:12px 0;border-radius:10px;font-weight:600;cursor:pointer;color:#222;transition:.2s}
+    .tab.active{background:#f0f2ff;background-image:linear-gradient(90deg,#0453F4,#F600FF);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+    .card{background:#fff;padding:30px;margin-top:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .card-title{font-size:22px;font-weight:700;margin-bottom:25px;background:linear-gradient(90deg,#0453F4,#F600FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 30px}
+    .form-row{display:flex;align-items:center;gap:10px}
+    .form-row label{font-size:15px;font-weight:600;color:#333;min-width:90px}
+    .form-row input{flex:1;padding:10px 15px;border:1px solid #ddd;border-radius:8px;font-size:15px;transition:.3s}
+    .form-row input:focus{outline:none;border-color:#0453F4;box-shadow:0 0 0 3px rgba(4,83,244,.1)}
+    .copy-btn{width:32px;height:32px;background:linear-gradient(90deg,#0453F4,#F600FF);border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+    .copy-icon{width:18px;height:18px;fill:#fff}
+    .save-btn,.add-btn{background:linear-gradient(90deg,#0453F4,#F600FF);color:#fff;border:none;padding:12px 28px;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(4,83,244,.3);transition:.2s}
+    .save-btn{padding:14px 40px;margin-top:30px;font-size:16px}
+    .save-btn:hover,.add-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(4,83,244,.4)}
+    .add-btn{float:right}
+    .section-header{background:#e8f0fe;padding:16px 24px;border-radius:12px;margin-bottom:24px;display:flex;align-items:center;gap:12px}
+    .count-badge{background:#fff;width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#0453F4}
+    .header-title{font-size:20px;font-weight:700;color:#000}
+    .item-list{display:flex;flex-direction:column;gap:15px;margin-top:20px;clear:both}
+    .list-item{background:#fff;padding:20px 25px;border-radius:12px;display:flex;align-items:center;gap:15px;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:.2s}
+    .list-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+    .student-item{background:#f8f9fa;border:1px solid #e0e0e0}
+    .student-item:hover{transform:none;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .student-avatar{width:45px;height:45px;border-radius:50%;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:20px}
+    .student-name{flex:1;font-size:16px;font-weight:600;color:#333}
+    .assignment-item{cursor:pointer}
+    .assignment-number{background:#f5f7fa;color:#0453F4;border-radius:8px;font-weight:700;font-size:20px;width:45px;height:45px;display:flex;align-items:center;justify-content:center}
+    .item-title{flex:1;font-size:18px;font-weight:700;color:#000}
+    .action-buttons{display:flex;gap:12px}
+    .action-btn{width:44px;height:44px;background:#f0f0f0;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+    .action-btn:hover{transform:scale(1.05);background:#e5e5e5}
+    .action-btn.manage .action-icon{fill:#4b10e3}
+    .action-btn.edit .action-icon{fill:#F600FF}
+    .action-btn.delete,.view-btn{background:linear-gradient(90deg,#0453F4,#F600FF)}
+    .action-btn.delete .action-icon,.view-btn .action-icon{fill:#fff}
+    .action-btn.delete:hover,.view-btn:hover{transform:scale(1.1);box-shadow:0 4px 12px rgba(4,83,244,.4)}
+    .action-icon{width:22px;height:22px}
+    .view-btn{width:44px;height:44px;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:1000;opacity:0;transition:opacity .3s}
+    .modal-overlay.active{display:flex;opacity:1}
+    .modal{background:#fff;padding:40px;border-radius:16px;text-align:center;min-width:400px;box-shadow:0 8px 32px rgba(0,0,0,.2);transform:scale(.9);transition:transform .3s}
+    .modal-overlay.active .modal{transform:scale(1)}
+    .modal h3{margin-bottom:20px;color:#000;font-size:18px;font-weight:600}
+    .modal p{margin-bottom:20px;color:#666;font-size:15px}
+    .modal-input{width:100%;padding:12px 15px;border:1px solid #ddd;border-radius:8px;font-size:15px;margin-bottom:20px;transition:.3s}
+    .modal-input:focus{outline:none;border-color:#0453F4;box-shadow:0 0 0 3px rgba(4,83,244,.1)}
+    .modal-buttons{display:flex;gap:15px;justify-content:center}
+    .modal-btn{padding:12px 32px;border:none;border-radius:24px;font-weight:600;cursor:pointer;font-size:15px;transition:.2s}
+    .modal-btn.primary{background:linear-gradient(90deg,#0453F4,#F600FF);color:#fff;box-shadow:0 4px 12px rgba(4,83,244,.3)}
+    .modal-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(4,83,244,.4)}
+    .modal-btn.secondary{background:#fff;color:#333;border:1px solid #ddd}
+    .modal-btn.secondary:hover{background:#f5f5f5}
+    .success-message,.add-student-modal h3{background:linear-gradient(90deg,#0453F4,#F600FF);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:24px;font-weight:700}
+    .hidden{display:none!important}
+    .submission-header{background:#e8f0fe;padding:16px 24px;border-radius:12px;margin:20px 0 24px;display:flex;align-items:center;justify-content:space-between}
+    .submission-info{display:flex;align-items:center;gap:12px}
+    .submission-count{background:#fff;padding:8px 16px;border-radius:8px;font-weight:700;color:#0453F4;font-size:18px}
+    .back-btn{background:#fff;border:1px solid #ddd;padding:10px 24px;border-radius:20px;font-weight:600;cursor:pointer;transition:.2s}
+    .back-btn:hover{background:#f5f5f5}
+    .result-info{background:#fff;border:2px solid #0453F4;border-radius:12px;padding:20px;margin-bottom:20px}
+    .result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+    .result-item{display:flex;flex-direction:column;gap:5px}
+    .result-label{font-size:14px;font-weight:600;color:#666}
+    .result-value{font-size:15px;font-weight:600;color:#000;padding:8px 12px;background:#f5f5f5;border-radius:6px}
+    .question-result{background:#fff;padding:20px;border-radius:12px;margin-bottom:16px;border:2px solid #ddd}
+    .question-result.correct{background:#e8f5e9;border-color:#4caf50}
+    .question-result.incorrect{background:#ffebee;border-color:#f44336}
+    .question-header{font-size:16px;font-weight:600;margin-bottom:12px;color:#000}
+    .question-text{font-size:15px;color:#333;margin-bottom:15px;padding:10px;background:rgba(255,255,255,.5);border-radius:8px}
+    .answer-option{padding:10px 15px;margin-bottom:8px;border-radius:8px;font-size:15px}
+    .answer-option.user-answer{background:#fff;border:2px solid #2196f3;font-weight:600}
+    .answer-option.correct-answer{background:#c8e6c9;border:2px solid #4caf50;font-weight:600}
+    .answer-indicator{display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700;margin-left:8px}
+    .indicator-correct{background:#4caf50;color:#fff}
+    .indicator-wrong{background:#f44336;color:#fff}
+    .navigation-buttons{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:24px}
+    .nav-btn{width:44px;height:44px;border:none;border-radius:50%;background:linear-gradient(90deg,#0453F4,#F600FF);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+    .nav-btn:hover{transform:scale(1.1)}
+    .nav-btn:disabled{background:#ccc;cursor:not-allowed}
+    .page-indicator{padding:8px 20px;background:linear-gradient(90deg,#0453F4,#F600FF);color:#fff;border-radius:20px;font-weight:600}
+</style>
+</head>
+<body>
+    <div class="navbar">
+    <div class="logo-box"><div class="logo-circle"></div><span>Logo + tên</span></div>
+    <div class="nav-links">
+    <span class="nav-item">Home</span>
+    <span class="nav-item active">Lớp học</span>
+    <span class="nav-item">Tạo bài tập</span>
+    <span class="nav-item">🔔</span>
+    </div>
+    <button class="user-profile-btn"><div class="user-avatar"></div><span>NPN</span></button>
+    </div>
+
+    <div class="container">
+    <h2>Thông tin lớp học</h2>
+    <div class="tab-bar" id="mainTabs">
+    <div class="tab active" onclick="switchTab(0)">Thông tin lớp học</div>
+    <div class="tab" onclick="switchTab(1)">Quản lý học sinh</div>
+    <div class="tab" onclick="switchTab(2)">Hồ sơ bài tập</div>
+    <div class="tab" onclick="switchTab(3)">Thống kê lớp học</div>
+    </div>
+
+    <div class="card" id="card1">
+    <div class="card-title">Lớp Tiếng Anh 1</div>
+    <div class="form-grid">
+    <div class="form-row"><label>Giáo viên:</label><input type="text" id="teacherInput" value="Nguyễn Văn A"></div>
+    <div class="form-row"><label>Học sinh:</label><input type="number" id="studentsInput" value="30"></div>
+    <div class="form-row"><label>Mã lớp:</label><input type="text" id="classCodeInput" value="ENG10A1" readonly><button class="copy-btn" onclick="copyCode()"><svg class="copy-icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></button></div>
+    <div class="form-row"><label>Môn học:</label><input type="text" id="subjectInput" value="Tiếng anh"></div>
+    </div>
+    <button class="save-btn" onclick="openModal('confirmModal')">Lưu thông tin</button>
+    </div>
+
+    <div class="card hidden" id="card2">
+    <div class="section-header"><span class="count-badge" id="studentCount">2</span><span>HS</span></div>
+    <button class="add-btn" onclick="openModal('addStudentModal')">Thêm học sinh</button>
+    <div class="item-list" id="studentsList"></div>
+    </div>
+
+    <div class="card hidden" id="card3">
+    <div class="tab-bar" id="assignmentTabs">
+    <div class="tab active" onclick="switchAssignmentTab(0)">Thông tin bài tập</div>
+    <div class="tab" onclick="switchAssignmentTab(1)">Danh sách nộp bài</div>
+    <div class="tab" onclick="switchAssignmentTab(2)">Kết quả bài làm</div>
+    </div>
+
+    <div id="view1">
+    <div class="section-header" style="margin-top:20px"><span class="count-badge">2</span><span class="header-title">Danh sách bài tập đã lưu</span></div>
+    <div class="item-list">
+    <div class="list-item assignment-item"><div class="assignment-number">1</div><div class="item-title">Ôn tập từ vựng - School</div><button class="action-btn manage" onclick="viewSubmissions()"><svg class="action-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></button></div>
+    <div class="list-item assignment-item"><div class="assignment-number">2</div><div class="item-title">Ôn tập từ vựng - Home</div><button class="action-btn manage" onclick="viewSubmissions()"><svg class="action-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></button></div>
+    </div>
+    </div>
+
+    <div id="view2" class="hidden">
+    <div class="submission-header"><div class="submission-info"><span class="submission-count">10/38</span><span style="font-weight:600">Hồ sơ nộp bài</span></div><button class="back-btn" onclick="switchAssignmentTab(0)">Quay lại</button></div>
+    <div class="item-list">
+    <div class="list-item student-item"><div class="student-avatar">👤</div><div class="student-name">Faker</div><button class="view-btn" onclick="viewResult()"><svg class="action-icon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button></div>
+    <div class="list-item student-item"><div class="student-avatar">👤</div><div class="student-name">Anh Vinh đơn lừa</div><button class="view-btn" onclick="viewResult()"><svg class="action-icon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button></div>
+    </div>
+    </div>
+
+    <div id="view3" class="hidden">
+    <div class="submission-header"><h3 style="font-size:20px;font-weight:700">Quản lý bài tập</h3><button class="back-btn" onclick="switchAssignmentTab(1)">Quay lại</button></div>
+    <div class="result-info">
+    <div class="result-grid">
+    <div class="result-item"><span class="result-label">Tên bài quiz:</span><div class="result-value">Ôn tập từ vựng - School</div></div>
+    <div class="result-item"><span class="result-label">Loại câu hỏi:</span><div class="result-value">Một đáp án đúng</div></div>
+    <div class="result-item"><span class="result-label">Số câu:</span><div class="result-value">10</div></div>
+    <div class="result-item"><span class="result-label">Số câu đúng:</span><div class="result-value">8</div></div>
+    <div class="result-item"><span class="result-label">Số câu sai:</span><div class="result-value">2</div></div>
+    <div class="result-item"><span class="result-label">Thời gian:</span><div class="result-value">5 phút</div></div>
+    </div>
+    </div>
+    <div class="question-result correct"><div class="question-header">Câu hỏi: What does "library" mean?<span class="answer-indicator indicator-correct">✓ Đúng</span></div><div class="question-text">What does "library" mean?</div><div class="answer-option">Đáp án: Phòng máy</div><div class="answer-option user-answer correct-answer">Đáp án: Thư viện</div></div>
+    <div class="question-result incorrect"><div class="question-header">Câu hỏi: What does "library" mean?<span class="answer-indicator indicator-wrong">✗ Sai</span></div><div class="question-text">What does "library" mean?</div><div class="answer-option user-answer">Đáp án: Phòng máy</div><div class="answer-option correct-answer">Đáp án: Thư viện</div></div>
+    <div class="navigation-buttons"><button class="nav-btn">◀</button><span class="page-indicator">2/10</span><button class="nav-btn">▶</button></div>
+    </div>
+    </div>
+
+    <div class="card hidden" id="card4"><h3>Thống kê lớp học</h3><p>Chức năng đang phát triển...</p></div>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal"><div class="modal"><h3>Lưu thông tin lớp học của bạn nhé?</h3><div class="modal-buttons"><button class="modal-btn primary" onclick="saveInfo()">Đồng ý</button><button class="modal-btn secondary" onclick="closeModal('confirmModal')">Quay lại</button></div></div></div>
+    <div class="modal-overlay" id="successModal"><div class="modal"><div class="success-message">Đã lưu thành công !</div></div></div>
+    <div class="modal-overlay add-student-modal" id="addStudentModal"><div class="modal"><h3>Thêm học sinh</h3><p>Nhập email của học sinh vào đây:</p><input type="email" class="modal-input" id="emailInput" placeholder="example@email.com"><div class="modal-buttons"><button class="modal-btn secondary" onclick="closeModal('addStudentModal')">Quay lại</button></div></div></div>
+    <div class="modal-overlay" id="confirmAddModal"><div class="modal"><div class="list-item student-item" style="margin-bottom:20px;justify-content:center;border:none"><div class="student-avatar">👤</div><div class="student-name" id="studentName"></div></div><div class="modal-buttons"><button class="modal-btn primary" onclick="addStudent()">Thêm vào lớp</button><button class="modal-btn secondary" onclick="backToEmail()">Quay lại</button></div></div></div>
+    <div class="modal-overlay" id="successAddModal"><div class="modal"><div class="success-message">Đã thêm vào lớp !</div></div></div>
+
+<script>
+    let students=[{name:"Faker"},{name:"Anh Vinh đơn lừa"}],origData={t:"Nguyễn Văn A",s:"30",c:"ENG10A1",m:"Tiếng anh"},tempName="";
+
+    function switchTab(i){document.querySelectorAll("#mainTabs .tab").forEach((t,j)=>t.classList.toggle("active",j===i));["card1","card2","card3","card4"].forEach((id,j)=>document.getElementById(id).classList.toggle("hidden",j!==i));if(i===2)switchAssignmentTab(0)}
+
+    function switchAssignmentTab(i){document.querySelectorAll("#assignmentTabs .tab").forEach((t,j)=>t.classList.toggle("active",j===i));["view1","view2","view3"].forEach((id,j)=>document.getElementById(id).classList.toggle("hidden",j!==i))}
+
+    function viewSubmissions(){switchAssignmentTab(1)}
+    function viewResult(){switchAssignmentTab(2)}
+
+    function openModal(id){document.getElementById(id).classList.add("active")}
+    function closeModal(id){document.getElementById(id).classList.remove("active")}
+    function showSuccess(id){openModal(id);setTimeout(()=>closeModal(id),2000)}
+
+    function copyCode(){navigator.clipboard.writeText(document.getElementById("classCodeInput").value).then(()=>alert("Đã sao chép mã lớp"))}
+
+    function saveInfo(){origData={t:document.getElementById("teacherInput").value,s:document.getElementById("studentsInput").value,c:document.getElementById("classCodeInput").value,m:document.getElementById("subjectInput").value};closeModal("confirmModal");showSuccess("successModal")}
+
+    function renderStudents(){const l=document.getElementById("studentsList");l.innerHTML="";students.forEach((s,i)=>{const d=document.createElement("div");d.className="list-item student-item";d.innerHTML=`<div class="student-avatar">👤</div><div class="student-name">${s.name}</div><button class="action-btn delete" onclick="delStudent(${i})"><svg class="action-icon" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>`;l.appendChild(d)});document.getElementById("studentCount").textContent=students.length}
+
+    function delStudent(i){students.splice(i,1);renderStudents()}
+
+    function backToEmail(){closeModal("confirmAddModal");openModal("addStudentModal")}
+
+    function addStudent(){students.push({name:tempName});renderStudents();closeModal("confirmAddModal");showSuccess("successAddModal")}
+
+    document.getElementById("emailInput").oninput=function(e){const v=e.target.value.trim();if(v.includes("@")){setTimeout(()=>{tempName=v.split("@")[0].charAt(0).toUpperCase()+v.split("@")[0].slice(1);document.getElementById("studentName").textContent=tempName;closeModal("addStudentModal");openModal("confirmAddModal")},500)}}
+
+    renderStudents();
+</script>
+</body>
+</html>

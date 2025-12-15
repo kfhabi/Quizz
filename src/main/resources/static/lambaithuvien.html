@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Làm bài thư viện</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #e5ebf5;
+            min-height: 100vh;
+        }
+
+        /* =========================================================
+           ===============  NAVBAR  =================================
+           ========================================================= */
+        .navbar {
+            background: #fff;
+            padding: 14px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo-box {
+            display:flex;
+            gap:10px;
+            align-items:center;
+            font-weight:600;
+            font-size:17px;
+            flex:1;
+        }
+
+        .logo-circle { 
+            width:36px; 
+            height:36px; 
+            border-radius:50%; 
+            background:#e6e6e6; 
+        }
+
+        .nav-links {
+            flex:2;
+            display:flex;
+            justify-content: space-between;
+            align-items:center;
+            font-weight:600;
+            font-size:15px;
+            position:relative;
+            margin:0 30px;
+        }
+
+        .nav-item {
+            cursor:pointer;
+            color:#000;
+            transition:opacity .15s ease;
+            padding:4px 8px;
+            position:relative;
+        }
+
+        .nav-item:hover { 
+            opacity:0.7; 
+        }
+
+        .active {
+            background: linear-gradient(90deg, #0453F4, #F600FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent !important;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 200px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(3,10,18,0.08);
+            padding: 6px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 200;
+        }
+
+        .dropdown-item {
+            padding: 10px 14px;
+            font-size: 14px;
+            color: #0b0b0b;
+            white-space: nowrap;
+        }
+
+        .dropdown-item:hover {
+            background: #f4f6fb;
+            cursor: pointer;
+        }
+
+        .user-profile-btn {
+            display: flex;
+            border: none;
+            background: #b8f1c4;
+            padding: 4px 12px 4px 4px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            align-items: center;
+            gap: 8px;
+            color: #000;
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        /* ========================================================= */
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        /* Info Card */
+        .info-card {
+            background: #fff;
+            border: 2px solid #0453F4;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .info-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #666;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .question-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .answers-container {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .answers-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .answers-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .answers-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #0453F4, #F600FF);
+            border-radius: 10px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .answer-option:hover {
+            border-color: #0453F4;
+            background: #f8f9ff;
+        }
+
+        .answer-option.selected {
+            border-color: #0453F4;
+            background: linear-gradient(90deg, rgba(4, 83, 244, 0.1), rgba(246, 0, 255, 0.1));
+        }
+
+        .answer-radio {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #0453F4;
+        }
+
+        .answer-text {
+            font-size: 15px;
+            color: #333;
+            flex: 1;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #0453F4, #F600FF);
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(4, 83, 244, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .page-indicator {
+            background: linear-gradient(90deg, #0453F4, #F600FF);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .timer {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #0453F4;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background: linear-gradient(90deg, #0453F4, #F600FF);
+            color: #fff;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 24px auto 0;
+            display: block;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(4, 83, 244, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(4, 83, 244, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ====================== NAVBAR ====================== -->
+    <div class="navbar">
+        <div class="logo-box">
+            <div class="logo-circle"></div>
+            <span>Logo + tên</span>
+        </div>
+
+        <div class="nav-links">
+            <span class="nav-item" onclick="goHome()">Home</span>
+            <span class="nav-item" onclick="goClass()">Lớp học</span>
+
+            <div class="nav-item active" id="libraryBtn" onclick="toggleLibrary(event)">
+                <span style="background: linear-gradient(90deg, #0453F4, #F600FF); -webkit-background-clip: text; background-clip: text; color: transparent;">Thư viện</span> ▼
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-item" onclick="openPage('library_saved')">Danh sách quiz đã lưu</div>
+                    <div class="dropdown-item" onclick="openPage('library_history')">Lịch sử làm bài</div>
+                </div>
+            </div>
+
+            <span class="nav-item" onclick="ThongBao()">🔔</span>
+        </div>
+
+        <button class="user-profile-btn" id="userProfileBtn" onclick="profileClick()">
+            <div class="user-avatar"></div>
+            <span>NPN</span>
+        </button>
+    </div>
+
+    <!-- ===================== MAIN ===================== -->
+    <div class="container">
+        <div class="page-title">Làm bài quiz</div>
+
+        <!-- Timer -->
+        <div class="timer" id="timer">Thời gian: 1:00</div>
+
+        <!-- Info Card -->
+        <div class="info-card">
+            <div class="info-title">Bài tập</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Tên bài quiz:</span>
+                    <div class="info-value" id="quizName">Ôn tập từ vựng - School</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Loại câu hỏi:</span>
+                    <div class="info-value" id="questionType">Một đáp án đúng</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Chủ đề:</span>
+                    <div class="info-value" id="subject">Tiếng Anh- Từ vựng</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ngày:</span>
+                    <div class="info-value" id="date">03/12/2025</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Mô tả:</span>
+                    <div class="info-value" id="description">Bài tập ôn tập về từ vựng trường học</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Phân loại câu hỏi:</span>
+                    <div class="info-value" id="level">Dễ</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Số câu:</span>
+                    <div class="info-value" id="totalQuestions">2</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Thời gian (phút):</span>
+                    <div class="info-value" id="timeLimit">1</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card">
+            <div class="question-header">Câu hỏi:</div>
+            <div class="question-text" id="questionText">
+                "School" có nghĩa là gì?
+            </div>
+
+            <div class="answers-container" id="answersContainer">
+                <div class="answer-option" onclick="selectAnswer(0)">
+                    <input type="radio" name="answer" class="answer-radio" id="answer0">
+                    <label class="answer-text" for="answer0">Đáp án: nhà</label>
+                </div>
+                <div class="answer-option" onclick="selectAnswer(1)">
+                    <input type="radio" name="answer" class="answer-radio" id="answer1">
+                    <label class="answer-text" for="answer1">Đáp án: trường học</label>
+                </div>
+                <div class="answer-option" onclick="selectAnswer(2)">
+                    <input type="radio" name="answer" class="answer-radio" id="answer2">
+                    <label class="answer-text" for="answer2">Đáp án: lớp học</label>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">◀</button>
+                <div class="page-indicator" id="pageIndicator">1/2</div>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">▶</button>
+            </div>
+        </div>
+
+        <button class="submit-btn" onclick="submitQuiz()">Kết quả</button>
+    </div>
+
+    <!-- ===================== JAVASCRIPT ===================== -->
+    <script>
+        // Dữ liệu mẫu
+        const quizData = {
+            name: "Ôn tập từ vựng - School",
+            subject: "Tiếng Anh- Từ vựng",
+            description: "Bài tập ôn tập về từ vựng trường học",
+            questionType: "Một đáp án đúng",
+            level: "Dễ",
+            timeLimit: 1,
+            date: "03/12/2025",
+            questions: [
+                {
+                    question: "School có nghĩa là gì? ",
+                    answers: ["nhà", "trường học", "lớp học"],
+                    correctAnswer: 1
+                },
+                {
+                    question: "Học tiếng anh là?",
+                    answers: ["Study", "Love", "Famiy"],
+                    correctAnswer: 0
+                },
+            
+            ]
+        };
+
+        let currentQuestion = 0;
+        let userAnswers = new Array(quizData.questions.length).fill(null);
+        let timeRemaining = quizData.timeLimit * 60; // Convert to seconds
+        let timerInterval;
+
+        // Load quiz info
+        function loadQuizInfo() {
+            document.getElementById('quizName').textContent = quizData.name;
+            document.getElementById('subject').textContent = quizData.subject;
+            document.getElementById('description').textContent = quizData.description;
+            document.getElementById('questionType').textContent = quizData.questionType;
+            document.getElementById('level').textContent = quizData.level;
+            document.getElementById('totalQuestions').textContent = quizData.questions.length;
+            document.getElementById('timeLimit').textContent = quizData.timeLimit;
+            document.getElementById('date').textContent = quizData.date;
+        }
+
+        // Load question
+        function loadQuestion() {
+            const q = quizData.questions[currentQuestion];
+            document.getElementById('questionText').textContent = q.question;
+            
+            const container = document.getElementById('answersContainer');
+            container.innerHTML = '';
+            
+            q.answers.forEach((answer, index) => {
+                const selected = userAnswers[currentQuestion] === index ? 'selected' : '';
+                const checked = userAnswers[currentQuestion] === index ? 'checked' : '';
+                container.innerHTML += `
+                    <div class="answer-option ${selected}" onclick="selectAnswer(${index})">
+                        <input type="radio" name="answer" class="answer-radio" id="answer${index}" ${checked}>
+                        <label class="answer-text" for="answer${index}">Đáp án: ${answer}</label>
+                    </div>
+                `;
+            });
+
+            // Update page indicator
+            document.getElementById('pageIndicator').textContent = `${currentQuestion + 1}/${quizData.questions.length}`;
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').disabled = currentQuestion === quizData.questions.length - 1;
+        }
+
+        // Select answer
+        function selectAnswer(index) {
+            userAnswers[currentQuestion] = index;
+            document.querySelectorAll('.answer-option').forEach((opt, i) => {
+                if (i === index) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+
+        // Navigation
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            }
+        }
+
+        // Timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                document.getElementById('timer').textContent = 
+                    `Thời gian: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Hết giờ làm bài!');
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        // Submit quiz
+        // Submit quiz
+function submitQuiz() {
+    clearInterval(timerInterval);
+    
+    // Calculate score
+    let correct = 0;
+    quizData.questions.forEach((q, index) => {
+        if (userAnswers[index] === q.correctAnswer) {
+            correct++;
+        }
+    });
+
+    // Save results to localStorage
+    const results = {
+        quizName: quizData.name,
+        totalQuestions: quizData.questions.length,
+        correctAnswers: correct,
+        incorrectAnswers: quizData.questions.length - correct,
+        score: ((correct / quizData.questions.length) * 100).toFixed(1),
+        timeTaken: quizData.timeLimit * 60 - timeRemaining
+    };
+
+    // QUAN TRỌNG: Lưu cả dữ liệu câu hỏi và câu trả lời của user
+    const quizDataForResults = {
+        questions: quizData.questions,
+        userAnswers: userAnswers
+    };
+
+    localStorage.setItem('quizResults', JSON.stringify(results));
+    localStorage.setItem('currentQuizData', JSON.stringify(quizDataForResults));
+    
+    // Redirect to results page
+    window.location.href = "ketqualbtv.html";
+}
+
+        // Navbar functions
+        function toggleLibrary(e){
+            e.stopPropagation();
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('userProfileBtn').classList.remove('active-state');
+
+            const lib = document.getElementById('libraryBtn');
+            const menu = document.getElementById('dropdownMenu');
+
+            lib.classList.add('active');
+
+            if(menu.style.display === 'flex'){
+                menu.style.display = 'none';
+                lib.classList.remove('active');
+            } else {
+                menu.style.display = 'flex';
+            }
+        }
+
+        function profileClick(){
+            window.location.href = "taikhoansinhvien.html";
+        }
+
+        document.addEventListener('click', function(e){
+            const lib = document.getElementById('libraryBtn');
+            const menu = document.getElementById('dropdownMenu');
+            if(!lib.contains(e.target)){
+                menu.style.display='none';
+                lib.classList.remove('active');
+            }
+        });
+
+        function openPage(page){
+            if(page === 'library_saved'){ window.location.href = "ThuvienDSL.html"; }
+            if(page === 'library_history'){ alert("Đi đến lịch sử làm bài"); }
+        }
+
+        function goHome() {
+            window.location.href = "trangchu.html";
+        }
+
+        function goClass() {
+            window.location.href = "Dsachlophoc.html";
+        }
+        function ThongBao() {
+            window.location.href = "Thongbaosvien.html";
+        }
+
+        // Lấy tên người dùng từ localStorage
+        const userName = localStorage.getItem("username") || "NPN";
+        const profileNameBtn = document.querySelector('#userProfileBtn span');
+        if (profileNameBtn) {
+            profileNameBtn.textContent = userName;
+        }
+
+        // Initialize
+        loadQuizInfo();
+        loadQuestion();
+        startTimer();
+    </script>
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thông tin lớp học</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #e5ebf5;
+    }
+
+    /* ---------------- NAVBAR ---------------- */
+    .navbar {
+        background: #fff;
+        padding: 14px 36px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .logo-box {
+        display:flex;
+        gap:10px;
+        align-items:center;
+        font-weight:600;
+        font-size:17px;
+        flex:1;
+    }
+
+    .logo-circle {
+        width:36px;
+        height:36px;
+        border-radius:50%;
+        background:#e6e6e6;
+    }
+
+    .nav-links {
+        flex:2;
+        display:flex;
+        justify-content: space-between;
+        align-items:center;
+        font-weight:600;
+        font-size:15px;
+        position:relative;
+        margin:0 30px;
+    }
+
+    .nav-item {
+        cursor:pointer;
+        padding:4px 8px;
+        color:#000;
+        transition:opacity 0.15s ease;
+        position:relative;
+    }
+
+    .nav-item:hover {
+        background: linear-gradient(90deg, #0453F4, #F600FF);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .active {
+        background: linear-gradient(90deg, #0453F4, #F600FF);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent !important;
+    }
+
+    .nav-item:not(.active):not(:hover) {
+        background: none;
+        -webkit-background-clip: unset;
+        background-clip: unset;
+        color: #000;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        min-width: 200px;
+        background:#fff;
+        border-radius:10px;
+        box-shadow:0 6px 20px rgba(3,10,18,0.08);
+        padding:6px 0;
+        display:none;
+        flex-direction:column;
+        z-index:200;
+    }
+
+    .dropdown-item {
+        padding:10px 14px;
+        font-size:14px;
+        color:#0b0b0b;
+        white-space:nowrap;
+        cursor:pointer;
+    }
+
+    .dropdown-item:hover { background:#f4f6fb; }
+
+    .user-profile-btn {
+        display:flex;
+        align-items:center;
+        padding:4px 12px 4px 4px;
+        border:none;
+        border-radius:20px;
+        background:#fff;
+        box-shadow:0 2px 4px rgba(0,0,0,0.05), inset 0 0 0 1px #eee;
+        cursor:pointer;
+        font-weight:500;
+        font-size:15px;
+        gap:8px;
+        color:#000;
+        transition:all 0.2s ease;
+        width:fit-content;
+    }
+
+    .user-avatar {
+        width:28px;
+        height:28px;
+        border-radius:50%;
+        background:#b8f1c4;
+    }
+
+    .user-profile-btn:active,
+    .user-profile-btn.active-state {
+        background: linear-gradient(90deg, #0453F4, #F600FF);
+        color: #fff;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 0 1px transparent;
+        transform: translateY(1px);
+    }
+
+    
+
+    /* ---------------- CONTENT ---------------- */
+    .container {
+        padding: 40px 60px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 24px;
+    }
+
+    /* TAB BAR */
+    .tab-bar {
+        display: flex;
+        background: white;
+        padding: 6px;
+        border-radius: 14px;
+        gap: 8px;
+        margin-bottom: 32px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: #222;
+    }
+
+    .tab.active {
+        background: linear-gradient(90deg, #0453F4, #F600FF);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .tab:hover:not(.active) {
+        background: #f5f5f5;
+    }
+
+    /* TAB CONTENT */
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* INFO CARD */
+    .info-card {
+        background: #fff;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        max-width: 600px;
+    }
+
+    .class-name {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 24px;
+        background: linear-gradient(90deg, #0453F4, #F600FF);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .info-row {
+        display: flex;
+        margin-bottom: 16px;
+        font-size: 15px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        min-width: 120px;
+        color: #333;
+    }
+
+    .info-value {
+        color: #666;
+    }
+
+    .copy-icon {
+        margin-left: 8px;
+        cursor: pointer;
+        color: #0453F4;
+        font-size: 18px;
+    }
+
+    .copy-icon:hover {
+        opacity: 0.7;
+    }
+
+    /* BÀI TẬP SECTION */
+    .assignment-header {
+        background: #e8f0fe;
+        padding: 16px 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .assignment-count {
+        background: #fff;
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0453F4;
+    }
+
+    .assignment-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #000;
+    }
+
+    /* ASSIGNMENT CONTAINER WITH SCROLLBAR */
+    .assignment-container {
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 8px;
+        position: relative;
+    }
+
+    /* Custom scrollbar */
+    .assignment-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .assignment-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .assignment-container::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #0453F4, #F600FF);
+        border-radius: 4px;
+    }
+
+    .assignment-container::-webkit-scrollbar-thumb:hover {
+        opacity: 0.8;
+    }
+
+    /* ASSIGNMENT CARD */
+    .assignment-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+    }
+
+    .assignment-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+
+    .assignment-number {
+        background: #f0f0f0;
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        flex-shrink: 0;
+    }
+
+    .assignment-info {
+        flex: 1;
+    }
+
+    .assignment-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #000;
+        margin-bottom: 4px;
+    }
+
+    .assignment-deadline {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .assignment-btn {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 24px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .btn-do {
+        background: linear-gradient(90deg, #0453F4, #F600FF);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(4, 83, 244, 0.3);
+    }
+
+    .btn-do:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(4, 83, 244, 0.4);
+    }
+
+    .btn-result {
+        background: #fff;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    .btn-result:hover {
+        background: #f5f5f5;
+    }
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================ -->
+<div class="navbar">
+  <div class="logo-box">
+    <div class="logo-circle"></div>
+    <span>Logo + tên</span>
+  </div>
+
+  <div class="nav-links" id="navLinks">
+    <span class="nav-item" onclick="goHome()">Home</span>
+    <span class="nav-item active">Lớp học</span>
+    
+    <div class="nav-item" id="libraryBtn" onclick="toggleLibrary(event)">
+      Thư viện ▼
+      <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-item" onclick="openPage('library_saved')">Danh sách quiz đã lưu</div>
+        <div class="dropdown-item" onclick="openPage('library_history')">Lịch sử làm bài</div>
+      </div>
+    </div>
+
+    <span class="nav-item" onclick="ThongBao()">🔔</span>
+  </div>
+
+  <button class="user-profile-btn" id="userProfileBtn" onclick="profileClick()">
+    <div class="user-avatar"></div>
+    <span>NPN</span>
+  </button>
+</div>
+
+<!-- ================= PAGE CONTENT ================ -->
+<div class="container">
+
+    <h1 class="page-title">Thông tin lớp học</h1>
+
+    <!-- TAB BAR -->
+    <div class="tab-bar">
+        <div class="tab active" onclick="switchTab(0)">Thông tin lớp học</div>
+        <div class="tab" onclick="switchTab(1)">Bài tập</div>
+        <div class="tab" onclick="switchTab(2)">Lịch sử làm bài</div>
+    </div>
+
+    <!-- TAB 1: Thông tin lớp học -->
+    <div class="tab-content active" id="tab1">
+        <div class="info-card">
+            <div class="class-name" id="className">Lớp Tiếng Anh 1</div>
+            
+            <div class="info-row">
+                <span class="info-label">Giáo viên:</span>
+                <span class="info-value" id="teacher">Nguyễn Văn A</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Học sinh:</span>
+                <span class="info-value" id="students">30</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Mã lớp:</span>
+                <span class="info-value" id="classCode">ENG10A1</span>
+                <span class="copy-icon" onclick="copyClassCode()" title="Sao chép">📋</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Môn học:</span>
+                <span class="info-value" id="subject">Tiếng anh</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Bài tập -->
+    <div class="tab-content" id="tab2">
+        <div class="assignment-header">
+            <div class="assignment-count">2</div>
+            <h3>Bài tập</h3>
+        </div>
+
+        <div class="assignment-container">
+            <!-- Bài tập chưa làm -->
+            <div class="assignment-card">
+                <div class="assignment-number">2</div>
+                <div class="assignment-info">
+                    <div class="assignment-title">Ôn tập từ vựng - School</div>
+                    <div class="assignment-deadline">Hạn nộp bài: 12/2/2025 15:20</div>
+                </div>
+                <button class="assignment-btn btn-do" onclick="doAssignment(10)">Làm bài</button>
+            </div>
+
+            <!-- Bài tập đã làm -->
+            <div class="assignment-card">
+                <div class="assignment-number">1</div>
+                <div class="assignment-info">
+                    <div class="assignment-title">Ôn tập từ vựng - Home</div>
+                    <div class="assignment-deadline">Hạn nộp bài: 10/11/2025 15:20</div>
+                </div>
+                <button class="assignment-btn btn-result" onclick="viewResult(9)">Kết quả</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Lịch sử làm bài -->
+    <div class="tab-content" id="tab3">
+        <div class="info-card">
+            <p style="text-align:center; color:#999;">Chức năng đang phát triển</p>
+        </div>
+    </div>
+
+   
+
+<script>
+// Class database
+const classDatabase = {
+    ENG10A1: {
+        name: "Lớp Tiếng Anh 1",
+        teacher: "Nguyễn Văn A",
+        students: 30,
+        subject: "Tiếng anh"
+    },
+    ENGSHFI: {
+        name: "Lớp Tiếng Anh 1",
+        teacher: "Nguyễn Văn A",
+        students: 30,
+        subject: "Tiếng Anh"
+    },
+    MATH01: {
+        name: "Lớp Toán Cơ Bản",
+        teacher: "Trần Thị B",
+        students: 25,
+        subject: "Toán"
+    }
+};
+
+// Load thông tin lớp học
+window.onload = function() {
+    const classCode = localStorage.getItem("selectedClassCode") || "ENG10A1";
+    const classInfo = classDatabase[classCode];
+    
+    if (classInfo) {
+        document.getElementById("className").textContent = classInfo.name;
+        document.getElementById("teacher").textContent = classInfo.teacher;
+        document.getElementById("students").textContent = classInfo.students;
+        document.getElementById("classCode").textContent = classCode;
+        document.getElementById("subject").textContent = classInfo.subject;
+    }
+}
+
+// Tab switching
+function switchTab(index) {
+    const tabs = document.querySelectorAll(".tab");
+    const contents = document.querySelectorAll(".tab-content");
+
+    tabs.forEach((t, i) => {
+        if (i === index) {
+            t.classList.add("active");
+            contents[i].classList.add("active");
+        } else {
+            t.classList.remove("active");
+            contents[i].classList.remove("active");
+        }
+    });
+}
+
+// Assignment functions
+function doAssignment(id) {
+    window.location.href = "lambailophoc.html";
+}
+
+function ThongBao() {
+     window.location.href = "Thongbaosvien.html";
+}
+
+function viewResult(id) {
+     window.location.href = "ketqualblh.html";
+}
+
+// Copy class code
+function copyClassCode() {
+    const code = document.getElementById("classCode").textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        alert("Đã sao chép mã lớp: " + code);
+    });
+}
+
+// Navigation functions
+function goHome(){
+    window.location.href = "trangchu.html";
+}
+
+function goClass() {
+    window.location.href = "Dsachlophoc.html";
+}
+
+// THÊM ĐOẠN NÀY
+const userName = localStorage.getItem("username") || "NPN";
+const profileNameBtn = document.querySelector('#userProfileBtn span');
+if (profileNameBtn) {
+    profileNameBtn.textContent = userName;
+}
+
+
+function openPage(page){
+    if(page === 'library_saved') {
+        window.location.href = 'ThuvienDSL.html';
+    } else if(page === 'library_history') {
+        window.location.href = "ThuvienLSU.html";
+    }
+}
+
+// Navbar functions
+function toggleLibrary(e){
+    e.stopPropagation();
+    const menu = document.getElementById('dropdownMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function profileClick() {
+    const btn = document.getElementById('userProfileBtn');
+    window.location.href = "taikhoansinhvien.html";
+    
+    btn.classList.add('active-state');
+    setTimeout(() => {
+        btn.classList.remove('active-state');
+    }, 200);
+
+    document.getElementById('dropdownMenu').style.display = 'none';
+}
+
+document.addEventListener('click', function(e){
+    const lib = document.getElementById('libraryBtn');
+    const menu = document.getElementById('dropdownMenu');
+    const profileBtn = document.getElementById('userProfileBtn');
+
+    if (!lib.contains(e.target)) {
+        menu.style.display = 'none';
+    }
+
+    if (!profileBtn.contains(e.target)) {
+        profileBtn.classList.remove('active-state');
+    }
+});
+</script>
+
+</body>
+</html>

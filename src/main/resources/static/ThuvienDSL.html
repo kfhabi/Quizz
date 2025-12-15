@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Thư viện - Danh sách đã lưu</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f8ff;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    background: #fff;
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .logo-box {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    font-weight:600;
+    font-size:17px;
+    flex:1;
+  }
+
+  .logo-circle { width:36px; height:36px; border-radius:50%; background:#e6e6e6; }
+
+  .nav-links {
+    flex:2;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    font-weight:600;
+    font-size:15px;
+    position:relative;
+    margin:0 30px;
+  }
+
+  .nav-item {
+    cursor:pointer;
+    color:#000;
+    transition:opacity .15s ease;
+    padding:4px 8px;
+    position:relative;
+  }
+  .nav-item:hover { opacity:0.7; }
+
+  .active {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    -webkit-background-clip-path: text;
+    background-clip: text;
+    color: transparent !important;
+  }
+
+  /* Dropdown */
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(3,10,18,0.08);
+    padding: 6px 0;
+    display: none;
+    flex-direction: column;
+    z-index: 200;
+  }
+
+  .dropdown-item {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #0b0b0b;
+    white-space: nowrap;
+  }
+
+  .dropdown-item:hover {
+    background: #f4f6fb;
+    cursor: pointer;
+  }
+
+  .user-profile-btn {
+    display: flex;
+    border: none;
+    background: #fff;
+    padding: 4px 12px 4px 4px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05), inset 0 0 0 1px #eee;
+    transition: all 0.2s ease;
+    align-items: center;
+    gap: 8px;
+    color: #000;
+  }
+
+  .user-avatar { 
+    width: 28px; 
+    height: 28px; 
+    border-radius: 50%; 
+    background: #b8f1c4;
+  }
+
+  .user-profile-btn:active,
+  .user-profile-btn.active-state {
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transform: translateY(1px);
+  }
+
+  /* LIBRARY CONTENT */
+  .library-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .library-header {
+    background: #e8f0fe;
+    padding: 16px 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .count-badge {
+    background: #fff;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0453F4;
+  }
+
+  .library-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+  }
+
+  /* QUIZ CARD */
+  .quiz-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+  }
+
+  .quiz-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+
+  .quiz-number {
+    background: #f0f0f0;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    flex-shrink: 0;
+  }
+
+  .quiz-info { flex: 1; }
+
+  .quiz-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+  }
+
+  .quiz-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f8f8f8;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 18px;
+  }
+
+  .icon-btn:hover { background: #e8e8e8; }
+  .icon-btn.compare { color: #0453F4; }
+  .icon-btn.edit    { color: #F600FF; }
+  .icon-btn.delete  { color: #ff4444; }
+
+  /* ==================== MODAL ==================== */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+    opacity: 1;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.1);
+    text-align: center;
+    max-width: 380px;
+    width: 90%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+  }
+
+  .modal-overlay.show .modal-content { transform: scale(1); }
+
+  .modal-content p {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 28px 0;
+    color: #333;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .btn-confirm {
+    border: none;
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    transition: opacity .2s;
+  }
+  .btn-confirm:hover { opacity: 0.9; }
+
+  .btn-cancel {
+    border: 1px solid #ddd;
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+    transition: background .2s;
+  }
+  .btn-cancel:hover { background: #f0f0f0; }
+
+  .success-message {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #0453F4, #F600FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <div class="logo-box">
+    <div class="logo-circle"></div>
+    <span>Logo + tên</span>
+  </div>
+
+  <div class="nav-links">
+    <span class="nav-item" onclick="goHome()">Home</span>
+    <span class="nav-item" onclick="goClass()">Lớp học</span>
+
+    <div class="nav-item active" id="libraryBtn" onclick="toggleLibrary(event)">
+      Thư viện ▼
+      <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-item" style="background:#f4f6fb;" onclick="openPage('library_saved')">Danh sách quiz đã lưu</div>
+        <div class="dropdown-item" onclick="openPage('library_history')">Lịch sử làm bài</div>
+      </div>
+    </div>
+
+    <span class="nav-item" onclick="ThongBao()">🔔</span>
+  </div>
+
+  <button class="user-profile-btn" id="userProfileBtn" onclick="profileClick()">
+    <div class="user-avatar"></div>
+    <span id="userName">NPN</span>
+  </button>
+</div>
+
+
+
+<!-- Nội dung thư viện -->
+<div class="library-container">
+  <div class="library-header">
+    <div class="count-badge" id="quizCount">10</div>
+    <h2>Danh sách bài tập đã lưu</h2>
+  </div>
+
+  <div class="quiz-card" data-id="2">
+    <div class="quiz-number">2</div>
+    <div class="quiz-info">
+      <p class="quiz-title">Ôn tập từ vựng - School</p>
+    </div>
+    <div class="quiz-actions">
+      <button class="icon-btn compare" title="Làm bài" onclick="doQuiz()">≋</button>
+      <button class="icon-btn edit" title="Chỉnh sửa" onclick="editQuiz(this)">✎</button>
+      <button class="icon-btn delete" title="Xóa" onclick="showDeleteModal(this)">🗑</button>
+    </div>
+  </div>
+
+  <div class="quiz-card" data-id="1">
+    <div class="quiz-number">1</div>
+    <div class="quiz-info">
+      <p class="quiz-title">Ôn tập từ vựng - Home</p>
+    </div>
+    <div class="quiz-actions">
+      <button class="icon-btn compare" title="Làm bài">≋</button>
+      <button class="icon-btn edit" title="Chỉnh sửa" onclick="editQuiz(this)">✎</button>
+      <button class="icon-btn delete" title="Xóa" onclick="showDeleteModal(this)">🗑</button>
+    </div>
+  </div>
+
+  
+
+<!-- Modal xác nhận xóa -->
+<div class="modal-overlay" id="confirmDeleteModal">
+  <div class="modal-content">
+    <p>Bạn muốn xóa đề thi này?</p>
+    <div class="modal-actions">
+      <button class="btn-confirm" id="confirmDeleteBtn">Đồng ý</button>
+      <button class="btn-cancel" onclick="hideDeleteModal()">Quay lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal thành công -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-content">
+    <p class="success-message">Đã xóa thành công!</p>
+  </div>
+</div>
+
+<script>
+  // Biến lưu thẻ card đang muốn xóa
+  let quizCardToDelete = null;
+
+  // ==================== MODAL XÓA ====================
+  function showDeleteModal(btn) {
+    quizCardToDelete = btn.closest('.quiz-card');
+    document.getElementById('confirmDeleteModal').classList.add('show');
+  }
+
+  function hideDeleteModal() {
+    document.getElementById('confirmDeleteModal').classList.remove('show');
+    quizCardToDelete = null;
+  }
+
+  function showSuccessModal() {
+    document.getElementById('successModal').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('successModal').classList.remove('show');
+    }, 1500);
+  }
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+    if (quizCardToDelete) {
+      quizCardToDelete.remove();
+
+      // Cập nhật số lượng
+      const count = document.querySelectorAll('.quiz-card').length;
+      document.getElementById('quizCount').textContent = count;
+
+      hideDeleteModal();
+      showSuccessModal();
+    }
+  });
+
+  // Cập nhật số lượng ban đầu
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('quizCount').textContent = document.querySelectorAll('.quiz-card').length;
+  });
+
+  // ==================== NAVBAR & DROPDOWN ====================
+  function setActive(el) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('dropdownMenu').style.display = 'none';
+  }
+
+  function toggleLibrary(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('dropdownMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+  }
+
+  function profileClick() {
+    const btn = document.getElementById('userProfileBtn');
+    window.location.href = "taikhoansinhvien.html";
+    btn.classList.add('active-state');
+    setTimeout(() => btn.classList.remove('active-state'), 200);
+    document.getElementById('dropdownMenu').style.display = 'none';
+  }
+
+  // Đóng dropdown khi click ngoài
+  document.addEventListener('click', function(e) {
+    const libraryBtn = document.getElementById('libraryBtn');
+    const menu = document.getElementById('dropdownMenu');
+    const profileBtn = document.getElementById('userProfileBtn');
+
+    if (!libraryBtn.contains(e.target)) menu.style.display = 'none';
+    if (!profileBtn.contains(e.target)) profileBtn.classList.remove('active-state');
+  });
+
+  function openPage(page) {
+    if (page === 'library_saved') return;
+    alert('Chuyển đến: ' + page);
+  }
+
+
+  // ==================== MỞ TRANG THÔNG TIN QUIZ KHI BẤM CARD ====================
+document.querySelectorAll('.quiz-card').forEach(card => {
+  card.addEventListener('click', function(e) {
+
+    // Nếu click vào nút chức năng (compare/edit/delete) → KHÔNG chuyển trang
+    if (e.target.closest('.icon-btn')) return;
+
+    const quizId = this.getAttribute('data-id');
+
+    // Chuyển sang trang thông tin quiz
+    // Nhung thay đường dẫn này thành trang của bạn
+    window.location.href = 'TtinbaitapTV.html';
+  });
+});
+
+function doQuiz() {
+    window.location.href = 'lambaithuvien.html';
+  }
+
+function editQuiz(btn) {
+  const card = btn.closest(".quiz-card");
+  const id = card.getAttribute("data-id");
+  window.location.href = 'Suabaitap.html';
+}
+
+function goHome() {
+    window.location.href = "trangchu.html";
+}
+
+function goClass() {
+    window.location.href = "Dsachlophoc.html";
+}
+
+function ThongBao() {
+    window.location.href = "Thongbaosvien.html";
+}
+
+// THÊM ĐOẠN NÀY
+const userName = localStorage.getItem("username") || "NPN";
+const profileNameBtn = document.querySelector('#userProfileBtn span');
+if (profileNameBtn) {
+    profileNameBtn.textContent = userName;
+}
+
+function openPage(page) {
+  if (page === 'library_saved') return;
+  window.location.href = "ThuvienLSU.html";
+  }
+
+
+</script>
+
+</body>
+</html>
+
+
